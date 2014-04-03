@@ -1166,6 +1166,7 @@ static int compact_node(int nid)
 	struct compact_control cc = {
 		.order = -1,
 		.sync = true,
+		.ignore_skip_hint = true,
 	};
 
 	return __compact_pgdat(NODE_DATA(nid), &cc);
