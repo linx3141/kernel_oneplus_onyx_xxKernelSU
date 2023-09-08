@@ -30,7 +30,6 @@ CONFIG_RELAY=y
 CONFIG_BLK_DEV_INITRD=y
 CONFIG_RD_LZMA=y
 CONFIG_RD_XZ=y
-CONFIG_PANIC_TIMEOUT=5
 CONFIG_EMBEDDED=y
 # CONFIG_PERF_EVENTS is not set
 # CONFIG_VM_EVENT_COUNTERS is not set
@@ -39,7 +38,6 @@ CONFIG_EMBEDDED=y
 # Kernel Performance Events And Counters
 #
 # CONFIG_SLUB_DEBUG is not set
-# CONFIG_COMPAT_BRK is not set
 CONFIG_PROFILING=y
 CONFIG_JUMP_LABEL=y
 
@@ -103,7 +101,6 @@ CONFIG_MSM_OCMEM=y
 CONFIG_MSM_OCMEM_LOCAL_POWER_CTRL=y
 CONFIG_SENSORS_ADSP=y
 CONFIG_MSM_ENABLE_WDOG_DEBUG_CONTROL=y
-CONFIG_STRICT_MEMORY_RWX=y
 
 #
 # Kernel Features
@@ -121,7 +118,6 @@ CONFIG_HIGHMEM=y
 CONFIG_COMPACTION=y
 CONFIG_ENABLE_VMALLOC_SAVING=y
 CONFIG_SECCOMP=y
-CONFIG_CC_STACKPROTECTOR=y
 # CONFIG_CP_ACCESS is not set
 
 #
@@ -188,7 +184,6 @@ CONFIG_INET_AH=y
 CONFIG_INET_ESP=y
 CONFIG_INET_IPCOMP=y
 # CONFIG_INET_LRO is not set
-CONFIG_INET_DIAG_DESTROY=y
 CONFIG_TCP_CONG_ADVANCED=y
 # CONFIG_TCP_CONG_BIC is not set
 # CONFIG_TCP_CONG_HTCP is not set
@@ -482,8 +477,6 @@ CONFIG_TRI_STATE_KEY=y
 #
 # CONFIG_VT is not set
 # CONFIG_LEGACY_PTYS is not set
-# CONFIG_DEVMEM is not set
-# CONFIG_DEVKMEM is not set
 
 #
 # Serial drivers
@@ -890,14 +883,89 @@ CONFIG_DEBUG_FS=y
 #
 # Security options
 #
-CONFIG_AUDIT=y
 CONFIG_KEYS=y
 CONFIG_ENCRYPTED_KEYS=y
-CONFIG_SECURITY=y
 CONFIG_SECURITY_NETWORK=y
-CONFIG_LSM_MMAP_MIN_ADDR=4096
+
+# Enable selinux
+CONFIG_AUDIT=y
+CONFIG_SECURITY=y
 CONFIG_SECURITY_SELINUX=y
 # CONFIG_SECURITY_SELINUX_AVC_STATS is not set
+
+# Disallow allocating the first 32k of memory (cannot be 64k due to ARM loader).
+CONFIG_DEFAULT_MMAP_MIN_ADDR=32768
+CONFIG_LSM_MMAP_MIN_ADDR=4096
+
+# Make sure PXN/PAN emulation is enabled.
+CONFIG_CPU_SW_DOMAIN_PAN=y
+
+# Use -fstack-protector-strong (gcc 4.9+) for best stack canary coverage.
+CONFIG_CC_STACKPROTECTOR=y
+CONFIG_CC_STACKPROTECTOR_STRONG=y
+
+# Make sure kernel page tables have safe permissions.
+CONFIG_DEBUG_KERNEL=y
+CONFIG_DEBUG_RODATA=y
+# This is the same as CONFIG_STRICT_KERNEL_RWX
+CONFIG_STRICT_MEMORY_RWX=y
+
+# Provides some protections against SYN flooding.
+CONFIG_SYN_COOKIES=y
+
+# Perform additional validation of various commonly targeted structures.
+CONFIG_DEBUG_CREDENTIALS=y
+CONFIG_DEBUG_NOTIFIERS=y
+CONFIG_DEBUG_LIST=y
+CONFIG_DEBUG_SG=y
+CONFIG_DEBUG_VIRTUAL=y
+CONFIG_BUG_ON_DATA_CORRUPTION=y
+CONFIG_SCHED_STACK_END_CHECK=y
+
+# Avoid kernel memory address exposures via dmesg (sets sysctl kernel.dmesg_restrict initial value to 1)
+CONFIG_SECURITY_DMESG_RESTRICT=y
+
+# Reboot devices immediately if kernel experiences an Oops.
+CONFIG_PANIC_ON_OOPS=y
+CONFIG_PANIC_TIMEOUT=-1
+
+# Make sure SELinux cannot be disabled trivially.
+# CONFIG_SECURITY_SELINUX_BOOTPARAM is not set
+# CONFIG_SECURITY_SELINUX_DEVELOP is not set
+# CONFIG_SECURITY_WRITABLE_HOOKS is not set
+
+# Dangerous; enabling this disables brk ASLR.
+# CONFIG_COMPAT_BRK is not set
+
+# Dangerous; enabling this allows direct kernel memory writing.
+# CONFIG_DEVKMEM is not set
+
+# Do not allow direct physical memory access
+# CONFIG_DEVMEM is not set
+
+# Dangerous; enabling this disables VDSO ASLR.
+# CONFIG_COMPAT_VDSO is not set
+
+# Dangerous; old interfaces and needless additional attack surface.
+# CONFIG_OABI_COMPAT is not set
+
+# Dangerous; enabling this allows replacement of running kernel.
+# CONFIG_HIBERNATION is not set
+
+# Prior to v4.1, assists heap memory attacks; best to keep interface disabled.
+# CONFIG_INET_DIAG is not set
+
+# Easily confused by misconfigured userspace, keep off.
+# CONFIG_BINFMT_MISC is not set
+
+# Use the modern PTY interface (devpts) only.
+# CONFIG_LEGACY_PTYS is not set
+
+# If SELinux can be disabled at runtime, the LSM structures cannot be read-only; keep off.
+# CONFIG_SECURITY_SELINUX_DISABLE is not set
+
+# Keep root from altering kernel memory via loadable modules.
+# CONFIG_MODULES is not set
 
 #
 # Crypto
